@@ -3,15 +3,17 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import word_tokenize
-import re
-import unicodedata
+from nltk.stem import WordNetLemmatizer
 nltk.download('punkt')
 nltk.download('stopwords')
+import re
+import unicodedata
 
 dfTest=pd.read_csv("data/testFile.csv",sep=',')
 dfTrain=pd.read_csv("data/trainFile.csv",sep=',')
 dfConcat=pd.concat([dfTest,dfTrain],axis=0,ignore_index=True)
 
+#Méthode pour la suppression d'URI
 #Méthode pour la suppression d'URI
 def remove_uri(text):
   # expression régulière pour détecter les URI
@@ -25,6 +27,14 @@ def removeStopWords(text):
   words=word_tokenize(text)
   removedStopWords=[word for word in words if word.lower() not in setStopWords]
   return ' '.join(removedStopWords)
+
+def limmatizer(text):
+  stemmer = SnowballStemmer('english')
+  words=word_tokenize(text)
+  wordsRemoved=[word for word in words if word.isalpha()]
+  stemmed_words = [stemmer.stem(word) for word in words]
+  return ' '.join(stemmed_words)
+
 
 dfConcat=pd.concat([dfTest,dfTrain],axis=0,ignore_index=True)
 #Suppression des doublons
@@ -44,21 +54,9 @@ dfConcat['text'] = dfConcat['text'].str.encode('utf-8')
 #transformer du type byte en string, du coup le b au début s'enlève
 dfConcat['title'] = dfConcat['title'].str.decode('utf-8')
 dfConcat['text'] = dfConcat['text'].str.decode('utf-8')
-for t in dfConcat['title']:
-  print (t)
-
-'''
-stemmer=SnowballStemmer("english")
-size=len(dfConcat)
-i=0
-#TODO ça ne marche pas
-while i<size:
-   title= dfConcat.iloc[0,'title']
-   tokens=word_tokenize(title)
-   print(tokens)
-   stemmed=[stemmer.stem(word) for word in tokens]
-   print(stemmed)'''
-
+#stemmatisation
+dfConcat['title'] = dfConcat['title'].apply(limmatizer)
+dfConcat['text'] = dfConcat['text'].apply(limmatizer)
 
 
 
