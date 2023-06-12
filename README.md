@@ -1,4 +1,4 @@
-# projet-machine-learning_Detecteur-de-fake-new
+# projet-machine-learning_Detection-de-fake-new
 Libraries : 
 nltk : pour la tokenisation, la suppression des mots vides, la racinisation et la lemmatisation des mots
 scikit-learn : pour la classification de texte et l'extraction de fonctionnalités
